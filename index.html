@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="hi" class="light scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodexWithAnil — Bulk Word to PDF &amp; Document Suite</title>
+
+  <!-- Website Favicon from logo.jpg -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/logo.jpg" />
+
+  <!-- Google Fonts: Inter & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS (Local & Fast) -->
+  <script src="vendor/tailwind.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Theme Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Offline & CDN Vendor Libraries -->
+  <script src="vendor/mammoth.browser.min.js"></script>
+  <script src="vendor/html2pdf.bundle.min.js"></script>
+  <script src="vendor/jszip.min.js"></script>
+  <script src="vendor/FileSaver.min.js"></script>
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script src="vendor/lucide.min.js"></script>
+</head>
+<body class="theme-bg-gradient antialiased min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- ===================================================================== -->
+  <!-- 1. TOP NAVBAR (USER FRIENDLY & THEME TOGGLE)                         -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/85 dark:bg-slate-950/85 backdrop-blur-xl transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo & Identity -->
+      <a href="#" class="flex items-center gap-3.5 group">
+        <div class="relative">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-display font-extrabold text-xl shadow-md shadow-indigo-500/25 overflow-hidden">
+            <img src="assets/logo.jpg" alt="CodexWithAnil" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <span class="hidden">CA</span>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              Codex<span class="text-indigo-600 dark:text-indigo-400">With</span>Anil
+            </span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20">
+              Bulk 50+ Suite
+            </span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+            Daily Office Automation • Word to PDF Converter
+          </p>
+        </div>
+      </a>
+
+      <!-- Right Header Actions (Engine Status & Light/Dark Theme Switcher) -->
+      <div class="flex items-center gap-3">
+        <!-- Engine Status Badge -->
+        <div id="engineStatusPill" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/20 transition">
+          <span id="engineStatusText" class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Checking Engine...
+          </span>
+        </div>
+
+        <!-- Theme Toggle Button -->
+        <button id="themeToggleBtn" type="button" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition shadow-sm" title="Toggle Light/Dark Theme">
+          <i data-lucide="moon" id="themeIconDark" class="w-4 h-4 text-indigo-500 hidden"></i>
+          <i data-lucide="sun" id="themeIconLight" class="w-4 h-4 text-amber-500"></i>
+          <span id="themeToggleText">Light Mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- 2. WORKSPACE NAVIGATION TABS (CLEAR & INTUITIVE)                     -->
+  <!-- ===================================================================== -->
+  <section class="border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2 py-3 overflow-x-auto">
+        
+        <!-- Tab 1: Word to PDF (PRIMARY TOOL) -->
+        <button id="tabWordBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow-md shadow-indigo-500/25 transition">
+          <i data-lucide="file-type-2" class="w-4 h-4"></i>
+          <span>📄 Bulk Word to PDF (50+ Files)</span>
+          <span class="px-1.5 py-0.5 rounded-md text-[10px] bg-white/20 uppercase">Daily Work</span>
+        </button>
+
+        <!-- Tab 2: History & Log -->
+        <button id="tabHistoryBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition ml-auto">
+          <i data-lucide="history" class="w-4 h-4 text-sky-500"></i>
+          <span class="hidden sm:inline">Conversion History</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 3. MAIN WORKSPACE CONTAINER                                           -->
+  <!-- ===================================================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- =================================================================== -->
+    <!-- VIEW A: BULK WORD TO PDF CONVERTER (PRIMARY)                        -->
+    <!-- =================================================================== -->
+    <div id="wordConverterView" class="space-y-6">
+      
+      <!-- Friendly Banner / Intro Header -->
+      <div class="pro-card p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400"></i>
+            1-Click High-Speed Batch Converter
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display">
+            Bulk Word to PDF Converter
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+            Apni daily office ki <strong class="text-indigo-600 dark:text-indigo-400">50+ Word files (.docx / .doc)</strong> ko ek saath select karein aur 1 click me high-quality PDF me convert karein. Layout, fonts, tables aur styling 100% safe rehti hai.
+          </p>
+        </div>
+
+        <!-- Quick 1-Click Load Test Sample Button -->
+        <div class="shrink-0">
+          <button id="loadSampleWordBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-500/15 dark:hover:bg-indigo-500/25 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-500/30 transition shadow-sm">
+            <i data-lucide="plus-circle" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+            <span>+ Load 5 Test Word Files</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Drag & Drop Zone (Supports 50+ Files at Once) -->
+      <div class="pro-card p-4 sm:p-6">
+        <div id="wordDropzone" class="dropzone-box p-8 sm:p-12 text-center cursor-pointer select-none">
+          <input type="file" id="wordFileInput" multiple accept=".docx,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword" class="hidden" />
+          
+          <div class="max-w-md mx-auto space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto border border-indigo-200 dark:border-indigo-500/20 shadow-sm">
+              <i data-lucide="file-up" class="w-8 h-8"></i>
+            </div>
+            
+            <div class="space-y-1">
+              <p class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100">
+                Yahan 50+ Word Files Drag &amp; Drop Karein ya Click Karein
+              </p>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                Supports <span class="font-semibold text-indigo-600 dark:text-indigo-400">.docx</span> aur <span class="font-semibold text-indigo-600 dark:text-indigo-400">.doc</span> formats (Ctrl + A karke ek baar me 50+ files select kar sakte hain)
+              </p>
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+              Safe, Private &amp; 100% Local Machine Processing
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulk Action Bar & Status Chips (Visible when files queued) -->
+      <div id="wordActionToolbar" class="hidden pro-card p-4 sm:p-6 space-y-4">
+        
+        <!-- Summary Counters -->
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-bold text-slate-700 dark:text-slate-200">Selected Files:</span>
+            <span id="wordCountChip" class="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300">0 Files</span>
+            <span id="wordSizeChip" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">0 KB</span>
+            <span id="wordDoneChip" class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">0 Converted</span>
+          </div>
+
+          <!-- Clear Queue Button -->
+          <button id="wordClearAllBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Clear All</span>
+          </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <!-- Primary Conversion Button -->
+          <button id="startWordConvertBtn" type="button" class="btn-convert-pulse flex-1 sm:flex-initial inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-lg shadow-indigo-500/30 transition transform active:scale-95">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+            <span>⚡ Convert All Files to PDF</span>
+          </button>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- 1-Click Download All Direct PDFs (NO ZIP!) -->
+            <button id="downloadAllDirectBtn" type="button" disabled class="opacity-50 cursor-not-allowed inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl font-bold text-xs sm:text-sm bg-sky-600 hover:bg-sky-700 text-white shadow-md shadow-sky-500/20 transition">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>⬇ Download All PDFs (Direct Click — No ZIP)</span>
+            </button>
+
+            <!-- 1-Click Download All as ZIP -->
+            <button id="downloadAllZipBtn" type="button" disabled class="opacity-50 cursor-not-allowed inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20 transition">
+              <i data-lucide="archive" class="w-4 h-4"></i>
+              <span>📦 Download All as ZIP</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Box -->
+        <div id="wordProgressBox" class="hidden space-y-2 pt-2">
+          <div class="flex items-center justify-between text-xs font-semibold">
+            <span id="wordProgressStatus" class="text-indigo-600 dark:text-indigo-400">Processing files...</span>
+            <span id="wordProgressPercent" class="font-mono text-slate-700 dark:text-slate-300">0%</span>
+          </div>
+          <div class="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+            <div id="wordProgressBar" class="progress-bar-striped h-full bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-500 transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State Notice -->
+      <div id="wordEmptyState" class="pro-card p-12 text-center space-y-3">
+        <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+          <i data-lucide="files" class="w-6 h-6"></i>
+        </div>
+        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          Abhi koi file select nahi ki gayi hai
+        </p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+          Word files (.docx ya .doc) ko upar diye gaye box me drag karein ya "+ Load 5 Test Word Files" button daba kar test karein.
+        </p>
+      </div>
+
+      <!-- File Queue List (Rows) -->
+      <div id="wordListContainer" class="hidden space-y-2"></div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- VIEW C: CONVERSION HISTORY (INDEXEDDB PERSISTED)                    -->
+    <!-- =================================================================== -->
+    <div id="historyView" class="hidden space-y-6">
+      <div class="pro-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white font-display">
+              Conversion Dashboard &amp; History
+            </h2>
+            <span id="historyCountBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300">
+              0 Saved
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Aapke convert kiye gaye sabhi PDFs yahan permanently save rehte hain. Kabhi bhi re-download karein.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="downloadAllHistoryBtn" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-700 text-white transition shadow-sm">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>⬇ Download All History</span>
+          </button>
+          <button id="clearHistoryBtn" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 transition">
+            <i data-lucide="trash" class="w-3.5 h-3.5"></i>
+            <span>Clear History</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="historyListContainer" class="space-y-2">
+        <div class="pro-card p-12 text-center text-xs text-slate-500">
+          Koi purana conversion record nahi hai.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- 4. FOOTER & CREDITS                                                  -->
+  <!-- ===================================================================== -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-950/70 py-6 mt-12 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-slate-700 dark:text-slate-200">CodexWithAnil</span>
+        <span>•</span>
+        <span>Daily Work Bulk Word to PDF Software</span>
+      </div>
+      <div>
+        <span>Built for High Performance (50+ Files at Once) &amp; Eye-Care UX</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- UI Navigation Script (Theme Toggle & Tab Switcher) -->
+  <script>
+    (function() {
+      // 1. Theme Management (Light / Dark)
+      const htmlEl = document.documentElement;
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      const themeToggleText = document.getElementById('themeToggleText');
+      const themeIconLight = document.getElementById('themeIconLight');
+      const themeIconDark = document.getElementById('themeIconDark');
+
+      function applyTheme(isDark) {
+        if (isDark) {
+          htmlEl.classList.add('dark');
+          htmlEl.classList.remove('light');
+          if (themeToggleText) themeToggleText.textContent = 'Dark Mode';
+          if (themeIconLight) themeIconLight.classList.add('hidden');
+          if (themeIconDark) themeIconDark.classList.remove('hidden');
+        } else {
+          htmlEl.classList.remove('dark');
+          htmlEl.classList.add('light');
+          if (themeToggleText) themeToggleText.textContent = 'Light Mode';
+          if (themeIconLight) themeIconLight.classList.remove('hidden');
+          if (themeIconDark) themeIconDark.classList.add('hidden');
+        }
+        localStorage.setItem('cwa_theme', isDark ? 'dark' : 'light');
+      }
+
+      // Initial theme: default to light for clean user-friendly day look
+      const savedTheme = localStorage.getItem('cwa_theme');
+      if (savedTheme === 'dark') {
+        applyTheme(true);
+      } else {
+        applyTheme(false);
+      }
+
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+          const isDark = htmlEl.classList.contains('dark');
+          applyTheme(!isDark);
+        });
+      }
+
+      // 2. Tab Navigation
+      const tabWordBtn = document.getElementById('tabWordBtn');
+      const tabHistoryBtn = document.getElementById('tabHistoryBtn');
+
+      const wordView = document.getElementById('wordConverterView');
+      const historyView = document.getElementById('historyView');
+
+      function switchTab(activeTab) {
+        // Reset all views
+        [wordView, historyView].forEach(v => {
+          if (v) v.classList.add('hidden');
+        });
+
+        // Reset all button styles
+        [tabWordBtn, tabHistoryBtn].forEach(b => {
+          if (b) {
+            b.className = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition';
+          }
+        });
+
+        if (activeTab === 'word') {
+          if (wordView) wordView.classList.remove('hidden');
+          if (tabWordBtn) {
+            tabWordBtn.className = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow-md shadow-indigo-500/25 transition';
+          }
+        } else if (activeTab === 'history') {
+          if (historyView) historyView.classList.remove('hidden');
+          if (tabHistoryBtn) {
+            tabHistoryBtn.className = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-indigo-600 text-white shadow-md shadow-indigo-500/25 transition ml-auto';
+          }
+          if (typeof refreshHistoryDashboard === 'function') {
+            refreshHistoryDashboard();
+          }
+        }
+      }
+
+      if (tabWordBtn) tabWordBtn.addEventListener('click', () => switchTab('word'));
+      if (tabHistoryBtn) tabHistoryBtn.addEventListener('click', () => switchTab('history'));
+
+      // Render Lucide Icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    })();
+  </script>
+
+  <!-- Word to PDF Controller Script -->
+  <script src="js/wordToPdf.js"></script>
+
+  <!-- History DB & App Controller Scripts -->
+  <script src="js/historyDb.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

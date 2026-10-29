@@ -1,0 +1,151 @@
+/**
+ * CodexWithAnil — User-Friendly Modern Theme System (css/style.css)
+ * Thoughtfully designed for zero eye fatigue during long daily work hours.
+ */
+
+:root {
+  --bg-main: #f8fafc;
+  --panel-bg: #ffffff;
+  --panel-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --card-bg: #ffffff;
+  --card-subtle: #f1f5f9;
+  --dropzone-bg: #f8fafc;
+  --dropzone-border: #cbd5e1;
+  --shadow-soft: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 30px -5px rgba(15, 23, 42, 0.1), 0 4px 10px -2px rgba(15, 23, 42, 0.05);
+  --accent-primary: #4f46e5;
+  --accent-hover: #4338ca;
+  --badge-word: #2563eb;
+  --badge-pdf: #dc2626;
+  --badge-success: #10b981;
+}
+
+html.dark {
+  --bg-main: #0b1120;
+  --panel-bg: #131c31;
+  --panel-border: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --card-bg: #11192d;
+  --card-subtle: #1e293b;
+  --dropzone-bg: rgba(19, 28, 49, 0.6);
+  --dropzone-border: #334155;
+  --shadow-soft: 0 4px 25px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 35px -5px rgba(0, 0, 0, 0.6);
+  --accent-primary: #6366f1;
+  --accent-hover: #4f46e5;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Light / Dark Background Gradients */
+.theme-bg-gradient {
+  background-image: 
+    radial-gradient(at 15% 10%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 15%, rgba(14, 165, 233, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+html.dark .theme-bg-gradient {
+  background-image: 
+    radial-gradient(at 15% 10%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 85% 15%, rgba(14, 165, 233, 0.12) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Modern Card Surfaces */
+.pro-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow-soft);
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+}
+
+.pro-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Interactive Dropzone */
+.dropzone-box {
+  background: var(--dropzone-bg);
+  border: 2px dashed var(--dropzone-border);
+  border-radius: 1rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropzone-box:hover,
+.dropzone-box.drag-over {
+  border-color: #6366f1 !important;
+  background-color: rgba(99, 102, 241, 0.06) !important;
+  transform: translateY(-1px);
+}
+
+/* Pulse animation for primary CTA button */
+@keyframes softPulse {
+  0%, 100% {
+    box-shadow: 0 4px 15px -2px rgba(79, 70, 229, 0.35);
+  }
+  50% {
+    box-shadow: 0 6px 25px 2px rgba(79, 70, 229, 0.55);
+  }
+}
+
+.btn-convert-pulse {
+  animation: softPulse 2.5s infinite ease-in-out;
+}
+
+/* Progress bar animated striped fill */
+@keyframes progressStripes {
+  from { background-position: 40px 0; }
+  to { background-position: 0 0; }
+}
+
+.progress-bar-striped {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 40px 40px;
+  animation: progressStripes 1.2s linear infinite;
+}
+
+/* Custom Scrollbar (Gentle Slate) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

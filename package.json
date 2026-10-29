@@ -1,0 +1,21 @@
+{
+  "name": "codexwithanil-bulk-pdf-website",
+  "version": "1.0.0",
+  "description": "CodexWithAnil — 1-Click Bulk PDF Formatting & Watermark Website",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "CodexWithAnil",
+    "Bulk-PDF",
+    "Watermark",
+    "PDF-Formatter"
+  ],
+  "author": "CodexWithAnil",
+  "license": "MIT",
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
+}
